@@ -1,0 +1,203 @@
+{
+  "name": "First testing trigger workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1ctkOLBZqYts_Prb_QZTnORXYHCWH-SARhZC_PwFaKsA",
+          "mode": "list",
+          "cachedResultName": "n8n Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ctkOLBZqYts_Prb_QZTnORXYHCWH-SARhZC_PwFaKsA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ctkOLBZqYts_Prb_QZTnORXYHCWH-SARhZC_PwFaKsA/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        -624
+      ],
+      "id": "baedc754-ab7a-4ade-96da-aff8ddef1e01",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "0gHQhTtTMb8FLqXB",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        -512
+      ],
+      "id": "3633e21f-b557-4070-bda3-ed18891eadce",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -32,
+        -304
+      ],
+      "id": "32302798-403a-4474-83d9-7db966c05484",
+      "name": "When chat message received",
+      "webhookId": "5bb380df-714e-43be-b7fa-ae1e48cc43e7"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Read the following Google Sheets data and summarize it clearly:\n\n{{ JSON.stringify($json) }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        192,
+        -432
+      ],
+      "id": "df127b93-00e2-49c8-99ea-e516443ab217",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "qwen3:8b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        256,
+        -240
+      ],
+      "id": "59abdbc8-c99b-445c-91fb-aa2a0e9f19aa",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "lFnljBIYSsj8QRkX",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "=Bakarebisoye612@gmail.com",
+        "subject": "=Google Sheets Summary",
+        "message": "={{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        656,
+        -400
+      ],
+      "id": "1053f05b-d016-45a8-8315-b84e75ba25e3",
+      "name": "Send a message",
+      "webhookId": "9623e95c-ccc4-4b48-9db4-e475d3f222bd",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gOvJa3p2oHT1XKuD",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "533349c6-d37f-43ac-afa7-fa5e8b6d6402",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e5ca5f32368c7c9acdb92abcf13a683e43631b5c66e59a6ef621f4dacdb4577e"
+  },
+  "nodeGroups": [],
+  "id": "A3lfHqkKZKcVsXkl",
+  "tags": []
+}
