@@ -18,9 +18,9 @@ Ollama processes the request and generates an AI response based on the instructi
 The Gmail node automatically sends the AI-generated response to the specific email address.
 
 ### Technologies Used:
-n8n : Workflow automation platform used to build the entire automation. 
-Google Sheets Trigger : Detects, changes in the spreadsheet and start the workflow. 
-Aggregate : Organizes and prepares the data before AI processing. 
-Basic LLM Chain : Connects the workflow to the AI model. 
-Ollama Chat Model : Generates the AI response.
-Gmail : Delivers the generated response by email.
+1. n8n : Workflow automation platform used to build the entire automation. 
+2. Google Sheets Trigger : Detects, changes in the spreadsheet and start the workflow. 
+3. Aggregate : Organizes and prepares the data before AI processing. 
+4. Basic LLM Chain : Connects the workflow to the AI model. 
+5. Ollama Chat Model : Generates the AI response.
+6. Gmail : Delivers the generated response by email.
