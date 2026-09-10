@@ -1,0 +1,449 @@
+{
+  "name": "AI-Powered LinkedIn Content Posting Agent",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "7c0a8720-8466-4953-acf2-878aba07f28a",
+      "name": "Start LinkedIn AI Agent",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        -880
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "42cfb313-df89-4948-8e41-3d9d425ca9ce",
+              "name": "post_topic",
+              "value": "My Nova Mag design",
+              "type": "string"
+            },
+            {
+              "id": "5b5993d7-4ac7-4952-b834-2bbb361c1af6",
+              "name": "design_description",
+              "value": "Nova Mag Professional design skills and creativity.",
+              "type": "string"
+            },
+            {
+              "id": "ef4a0196-183f-4377-baaa-09142d4643ba",
+              "name": "tone",
+              "value": "Professional and confident",
+              "type": "string"
+            },
+            {
+              "id": "1a6bf7a0-cdf7-42de-9080-63b301bea849",
+              "name": "image_alt_text",
+              "value": "Nova Magazine Design",
+              "type": "string"
+            },
+            {
+              "id": "60f8daf7-b4e2-422c-9bfc-58fedc19472a",
+              "name": "image_file_path",
+              "value": "/n8n_files/linkedin-design.jpg",
+              "type": "string"
+            },
+            {
+              "id": "dd47b879-af97-4828-834a-cfc53c257d18",
+              "name": "linkedin_access_token",
+              "value": "AQV9ayxVwciwsU9cWhcy7CHKtwNFCaP0DtZ7dIR7iZPFKENINe2g6KDst5Ad719WI1TnZSyK3fPBniB7uAE6FSop9bzwyVFBJGguuRQW0R6rWE9XxGFt6MYs6FJzHZaBLL-M5XwObFM4PzMjfMeqkXbfaiy1stwnRJsiEKSspVQXJrPWlML01uSdDZlfo4e3n9vDMDwMY9Im45ON4HtEE5l_n-jS54tocD4I5VECi3sG8yT3VVn0jBg6mVk4YH24A47ASGir-SG7HixbWES3AZtXCace_HX_8QAb-T5xEB-XVwxpN92S9WGJR0Iqe0ZtZ5NOEg1AxC2huMN00VS2KvZzhxHjNw",
+              "type": "string"
+            },
+            {
+              "id": "81f73233-d30a-4cae-8072-9ffd2fea453e",
+              "name": "linkedin_person_urn",
+              "value": "urn:li:person:jT9KTDI9fP",
+              "type": "string"
+            },
+            {
+              "id": "016049cf-3428-4caf-ab71-a1bd097255d7",
+              "name": "linkedin_api_version",
+              "value": "202608",
+              "type": "string"
+            },
+            {
+              "id": "63eafc21-310b-4eb0-ac70-122d58dcb5c6",
+              "name": "ollama_base_url",
+              "value": "http://host.docker.internal:11434",
+              "type": "string"
+            },
+            {
+              "id": "c6a4d47c-cf1e-47ff-9771-5bf79d7c6d0b",
+              "name": "ollama_model",
+              "value": "qwen3:8b",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c347b4c3-90fa-4312-85a7-3e2cac8a2043",
+      "name": "Set Post Details",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -416,
+        -384
+      ]
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/.n8n-files/Nova-Mag-jpg.jpg",
+        "options": {
+          "dataPropertyName": "data"
+        }
+      },
+      "id": "9ad1ce89-539b-455f-bd88-69bef90a87a4",
+      "name": "Get Design Image",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        304,
+        -704
+      ],
+      "notes": "Configure image_file_path in Set Post Details to a JPG or PNG file path that is readable by the n8n runtime. If n8n runs in Docker, the image must be in a directory mounted into the container (for example /n8n_files). The binary property created by this node is named data."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://host.docker.internal:11434/api/generate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({\n  model: \"qwen3:8b\",\n  prompt: \"Write a professional LinkedIn post about my Nova Magazine editorial design project. Mention that I am a Graphic Designer and AI Automation Specialist, and that this post was prepared and published through an AI-powered automation workflow built with n8n. Emphasize that I am learning, experiencing, making mistakes, and improving, and that every workflow I build is another step forward. Keep the tone authentic, professional, and suitable for learning in public. Do not invent client results, engagement statistics, or claims that are not provided. Include these hashtags exactly: #RiseWithTechCrush #Tech4Africans #LearningWithTechCrush #AIAutomation #n8n #Automation #WorkflowAutomation #LearningInPublic #GraphicDesign #EditorialDesign #MagazineDesign #Typography #VisualDesign. Return only the LinkedIn post text, with no explanation.\",\n  stream: false\n}) }}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "cf8f6b3a-a4f0-421b-a4a3-53fa25c5e9eb",
+      "name": "Ollama AI Content Generator",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        256,
+        -160
+      ],
+      "notes": "Requires Ollama to be reachable from the n8n runtime. If n8n is in Docker, localhost usually points to the container; use host.docker.internal or the appropriate Docker host/service name instead."
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\n\n// Try to find the AI-generated content\nlet content =\n  input.text ||\n  input.response ||\n  input.content ||\n  input.output ||\n  input.message?.content ||\n  '';\n\nif (typeof content !== 'string') {\n  content = JSON.stringify(content);\n}\n\n// Clean unnecessary formatting\ncontent = content\n  .replace(/^```[\\s\\S]*?\\n/, '')\n  .replace(/\\n```$/, '')\n  .trim();\n\nreturn [\n  {\n    json: {\n      linkedinContent: content\n    }\n  }\n];"
+      },
+      "id": "6e85ce46-b7a3-4699-aebb-e7312403bd75",
+      "name": "Format LinkedIn Content",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        704,
+        -560
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/rest/images?action=initializeUpload",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "linkedInOAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Linkedin-Version",
+              "value": "202608"
+            },
+            {
+              "name": "X-Restli-Protocol-Version",
+              "value": "2.0.0"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "{\n  \"initializeUploadRequest\": {\n    \"owner\": \"urn:li:person:jT9KTDI9fP\"\n  }\n}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "968e9ce2-57d9-44a2-ad1e-1719186fadc0",
+      "name": "LinkedIn Initialize Image Upload",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        672,
+        -32
+      ],
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "hW3xmHcBxYKf58u9",
+          "name": "LinkedIn account"
+        }
+      },
+      "notes": "Uses the current LinkedIn Images API initializeUpload action. The member URN must match the authenticated LinkedIn member."
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ $('LinkedIn Initialize Image Upload').first().json.value.uploadUrl }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "image/jpeg"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "ab34a6d6-3895-407a-bff9-8d31c8233626",
+      "name": "Upload Design to LinkedIn",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1248,
+        -96
+      ],
+      "notes": "Uploads the binary property named data to the uploadUrl returned by LinkedIn. LinkedIn's upload URL is time-limited."
+    },
+    {
+      "parameters": {
+        "jsCode": "const details = $('Set Post Details').first().json;\nconst content = $('Format LinkedIn Content').first().json;\nconst imageInit = $('LinkedIn Initialize Image Upload').first().json;\n\nreturn [{\n  json: {\n    linkedin_person_urn: details.linkedin_person_urn,\n    linkedin_access_token: details.linkedin_access_token,\n    linkedin_api_version: details.linkedin_api_version,\n    imageUrn: imageInit.value.image,\n    image_alt_text: details.image_alt_text,\n    linkedin_post_text: content.linkedinContent\n  }\n}];"
+      },
+      "id": "f8e701a1-92f1-417c-b4c3-6c5c7aaa4540",
+      "name": "Prepare LinkedIn Post",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1696,
+        -544
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/rest/posts",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "linkedInOAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Linkedin-Version",
+              "value": "202608"
+            },
+            {
+              "name": "X-Restli-Protocol-Version",
+              "value": "2.0.0"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\n  {\n    author: $('Prepare LinkedIn Post').first().json.linkedin_person_urn,\n    commentary: $('Prepare LinkedIn Post').first().json.linkedin_post_text,\n    visibility: \"PUBLIC\",\n    distribution: {\n      feedDistribution: \"MAIN_FEED\",\n      targetEntities: [],\n      thirdPartyDistributionChannels: []\n    },\n    content: {\n      media: {\n        id: $('Prepare LinkedIn Post').first().json.imageUrn,\n        altText: $('Prepare LinkedIn Post').first().json.image_alt_text\n      }\n    },\n    lifecycleState: \"PUBLISHED\"\n  }\n}}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "85c9e7f6-b6d3-4043-8a5d-4af88811b1b0",
+      "name": "Publish Post to LinkedIn",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1744,
+        -176
+      ],
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "hW3xmHcBxYKf58u9",
+          "name": "LinkedIn account"
+        }
+      },
+      "notes": "Creates the published public member post using the current LinkedIn Posts API. A successful request returns HTTP 201 and the post ID in the x-restli-id response header."
+    },
+    {
+      "parameters": {
+        "jsCode": "const source = $('Prepare LinkedIn Post').first();\nconst postId =\n  $json?.headers?.['x-restli-id'] ??\n  $json?.headers?.['X-RestLi-Id'] ??\n  $json?.['x-restli-id'] ??\n  null;\nreturn [{\n  json: {\n    status: 'Success',\n    message: 'Your AI-generated LinkedIn post was published successfully.',\n    post_id: postId,\n    image_urn: source.json.imageUrn,\n    caption: source.json.caption,\n    hashtags: source.json.hashtags,\n    linkedin_post_text: source.json.linkedin_post_text\n  }\n}];"
+      },
+      "id": "2fc2f9e7-ce73-4884-a229-f460e3dd5745",
+      "name": "LinkedIn Post Success",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1744,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1232,
+        -688
+      ],
+      "id": "3b34afc1-80c7-46a0-a878-120f30917caa",
+      "name": "Merge"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Start LinkedIn AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Set Post Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Post Details": {
+      "main": [
+        [
+          {
+            "node": "Get Design Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Design Image": {
+      "main": [
+        [
+          {
+            "node": "Ollama AI Content Generator",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama AI Content Generator": {
+      "main": [
+        [
+          {
+            "node": "Format LinkedIn Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format LinkedIn Content": {
+      "main": [
+        [
+          {
+            "node": "LinkedIn Initialize Image Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LinkedIn Initialize Image Upload": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Upload Design to LinkedIn": {
+      "main": [
+        [
+          {
+            "node": "Prepare LinkedIn Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare LinkedIn Post": {
+      "main": [
+        [
+          {
+            "node": "Publish Post to LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publish Post to LinkedIn": {
+      "main": [
+        [
+          {
+            "node": "LinkedIn Post Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Upload Design to LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "4a1cae13-9a7f-4977-a8b1-74d3451c8029",
+  "meta": {
+    "instanceId": "09f6cb8b40f0882b95bb68e92abc6ad149c11ede30ffb343a7b28157b87be5ea"
+  },
+  "nodeGroups": [],
+  "id": "0ivzNKszvc7jcgCq",
+  "tags": []
+}
